@@ -1,0 +1,117 @@
+lockfile_version: '1'
+generated_at: '2026-08-13T11:21:10.938187+00:00'
+apm_version: 0.28.0
+dependencies:
+- repo_url: ministryofjustice/ai-toolkit
+  name: data-platform-platform-engineering
+  host: github.com
+  resolved_commit: 90cb6d6bf1ac12d04db9b3b1aa966c1995c30a8a
+  resolved_ref: main
+  version: 1.0.0
+  virtual_path: toolkits/data-platform/platform-engineering
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .github/instructions/commit.instructions.md
+  - .github/instructions/github.instructions.md
+  - .github/instructions/kubernetes.instructions.md
+  - .github/instructions/terraform.instructions.md
+  deployed_file_hashes:
+    .github/instructions/commit.instructions.md: sha256:e97f008cda4c507acd626f395ed9e496cfb1922ef59f10c9a5ecf0cc78e770b0
+    .github/instructions/github.instructions.md: sha256:b78d1299d1e5a7c9f2009f14a36620af6573de1b0bd0fe43aba273b7c22e7267
+    .github/instructions/kubernetes.instructions.md: sha256:d392b5d0471da42c9f260a8d5ac3f1964fa0906e4c3d4d35de8858524a336212
+    .github/instructions/terraform.instructions.md: sha256:cbd7b722b995010f0dd50f6e2dd8cdc52f7d807bf569b7d39353d98018fc6c98
+  content_hash: sha256:666ada489a6f3f1d11daae9cf2f24aa1f783b0f54483d408208b3a69b2855a80
+- repo_url: ministryofjustice/ai-toolkit
+  name: universal
+  host: github.com
+  resolved_commit: 90cb6d6bf1ac12d04db9b3b1aa966c1995c30a8a
+  resolved_ref: main
+  version: 1.0.0
+  virtual_path: toolkits/universal
+  is_virtual: true
+  package_type: apm_package
+  deployed_files:
+  - .github/instructions/language.instructions.md
+  - .github/instructions/ministryofjustice.instructions.md
+  deployed_file_hashes:
+    .github/instructions/language.instructions.md: sha256:70e9d0f220f2ceec1cf5b8088c9e199259670f9baa383b330ff3ba9e4107e655
+    .github/instructions/ministryofjustice.instructions.md: sha256:b90d90b99e711ec0823c240f15421cdb2fd03d14aaad7d6622e93f108c5309c5
+  content_hash: sha256:32404084d9e9a4dc1cd48029d883847657f7b8bf464dd91586fb653db208f74a
+deployments:
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/commit.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
+  active_owner: ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
+  content_hash: sha256:e97f008cda4c507acd626f395ed9e496cfb1922ef59f10c9a5ecf0cc78e770b0
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/github.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
+  active_owner: ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
+  content_hash: sha256:b78d1299d1e5a7c9f2009f14a36620af6573de1b0bd0fe43aba273b7c22e7267
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/kubernetes.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
+  active_owner: ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
+  content_hash: sha256:d392b5d0471da42c9f260a8d5ac3f1964fa0906e4c3d4d35de8858524a336212
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/language.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - ministryofjustice/ai-toolkit/toolkits/universal
+  active_owner: ministryofjustice/ai-toolkit/toolkits/universal
+  content_hash: sha256:70e9d0f220f2ceec1cf5b8088c9e199259670f9baa383b330ff3ba9e4107e655
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/ministryofjustice.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - ministryofjustice/ai-toolkit/toolkits/universal
+  active_owner: ministryofjustice/ai-toolkit/toolkits/universal
+  content_hash: sha256:b90d90b99e711ec0823c240f15421cdb2fd03d14aaad7d6622e93f108c5309c5
+- kind: project-relative
+  target: copilot
+  value: .github/instructions/terraform.instructions.md
+  runtime: null
+  scope: project
+  owners:
+  - ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
+  active_owner: ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
+  content_hash: sha256:cbd7b722b995010f0dd50f6e2dd8cdc52f7d807bf569b7d39353d98018fc6c98
+- kind: uri
+  target: mcp
+  value: github
+  runtime: vscode
+  scope: project
+  owners:
+  - .
+  active_owner: .
+  content_hash: null
+mcp_servers:
+- github
+mcp_configs:
+  github:
+    name: github
+    transport: http
+    registry: false
+    url: https://api.githubcopilot.com/mcp/
+mcp_target_servers:
+  vscode:
+  - github
+mcp_config_provenance:
+  github: universal
