@@ -1,0 +1,9 @@
+---
+version: 1.0.0
+name: gcp-management
+targets:
+  - copilot
+dependencies:
+  apm:
+    - ministryofjustice/ai-toolkit/toolkits/universal#main
+    - ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering#main

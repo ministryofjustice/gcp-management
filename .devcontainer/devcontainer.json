@@ -1,0 +1,20 @@
+{
+  "name": "gcp-manangement",
+  "image": "ghcr.io/ministryofjustice/devcontainer-base:latest",
+  "features": {
+    "ghcr.io/ministryofjustice/devcontainer-feature/apm:": {},
+    "ghcr.io/ministryofjustice/devcontainer-feature/astral:": {},
+    "ghcr.io/ministryofjustice/devcontainer-feature/terraform:": {}
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "EditorConfig.EditorConfig",
+        "GitHub.copilot-chat",
+        "GitHub.vscode-github-actions",
+        "GitHub.vscode-pull-request-github"
+      ]
+    }
+  },
+  "postCreateCommand": "bash .devcontainer/post-create.sh"
+}
