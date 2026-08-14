@@ -10,10 +10,6 @@ data "google_folder" "moj_gcp" {
   folder = "989817083373"
 }
 
-data "google_project" "management" {
-  project_id = "moj-gcp-management"
-}
-
 data "google_kms_key_ring" "terraform" {
   name     = "terraform"
   location = "europe-west2"
