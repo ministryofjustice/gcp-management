@@ -2,6 +2,9 @@
   "name": "gcp-manangement",
   "image": "ghcr.io/ministryofjustice/devcontainer-base:latest",
   "features": {
+    "ghcr.io/devcontainers/features/docker-in-docker:": {},
+    "ghcr.io/devcontainers/features/github-cli:": {},
+    "ghcr.io/devcontainers/features/node:": {},
     "ghcr.io/ministryofjustice/devcontainer-feature/apm:": {},
     "ghcr.io/ministryofjustice/devcontainer-feature/astral:": {},
     "ghcr.io/ministryofjustice/devcontainer-feature/terraform:": {}

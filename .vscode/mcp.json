@@ -1,10 +1,17 @@
 {
+  "inputs": [],
   "servers": {
+    "gcloud": {
+      "command": "npx",
+      "args": ["--yes", "@google-cloud/gcloud-mcp"]
+    },
     "github": {
       "type": "http",
-      "url": "https://api.githubcopilot.com/mcp/",
-      "headers": {}
+      "url": "https://api.githubcopilot.com/mcp/"
+    },
+    "terraform": {
+      "command": "docker",
+      "args": ["run", "--interactive", "--rm", "hashicorp/terraform-mcp-server"]
     }
-  },
-  "inputs": []
+  }
 }

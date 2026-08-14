@@ -1,5 +1,6 @@
 ---
 description: Terraform instructions
+source: https://github.com/ministryofjustice/ai-toolkit/blob/main/toolkits/data-platform/platform-engineering/.apm/instructions/terraform.instructions.md
 ---
 
 # Terraform
