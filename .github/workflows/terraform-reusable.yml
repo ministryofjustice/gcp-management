@@ -1,0 +1,238 @@
+---
+name: Terraform - Reusable
+
+on:
+  workflow_call:
+    inputs:
+      working-directory:
+        description: "Directory containing the Terraform configuration, e.g. terraform/management"
+        required: true
+        type: string
+      workspace:
+        description: "Terraform workspace to select, e.g. development. Leave empty to use the default workspace"
+        required: false
+        type: string
+        default: ""
+      environment:
+        description: "GitHub Environment to gate the apply job with, e.g. ai-gateway-development or management"
+        required: true
+        type: string
+      action:
+        description: "Set to plan or plan_apply"
+        required: true
+        type: string
+    secrets:
+      GCP_PROJECT_ID:
+        required: true
+      GCP_WORKLOAD_IDENTITY_PROVIDER:
+        required: true
+      GCP_SERVICE_ACCOUNT:
+        required: true
+
+permissions: {}
+
+concurrency:
+  group: terraform-${{ inputs.working-directory }}-${{ inputs.workspace }}
+  cancel-in-progress: false
+
+jobs:
+  plan:
+    name: Plan
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    env:
+      TF_IN_AUTOMATION: true
+      PLAN_LABEL: ${{ inputs.environment }}
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set Artifact Name
+        id: set_artifact_name
+        shell: bash
+        env:
+          WORKING_DIRECTORY: ${{ inputs.working-directory }}
+          WORKSPACE: ${{ inputs.workspace }}
+        run: |
+          echo "ARTIFACT_NAME=tfplan-$(echo "${WORKING_DIRECTORY}" | tr '/' '-')${WORKSPACE:+-${WORKSPACE}}" >>"${GITHUB_ENV}"
+
+      - name: Set Up Terraform
+        id: setup_terraform
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+
+      - name: Authenticate to Google Cloud
+        id: auth_gcloud
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Initialise Terraform
+        id: initialise_terraform
+        shell: bash
+        run: |
+          terraform init -upgrade
+
+      - name: Select Terraform Workspace
+        if: inputs.workspace != ''
+        id: select_workspace
+        shell: bash
+        env:
+          WORKSPACE: ${{ inputs.workspace }}
+        run: |
+          terraform workspace select -or-create "${WORKSPACE}"
+
+      - name: Validate Terraform
+        if: github.ref != 'refs/heads/main'
+        id: terraform_validate
+        shell: bash
+        run: |
+          terraform validate
+
+      - name: Terraform Plan
+        id: terraform_plan
+        shell: bash
+        run: |
+          terraform plan -input=false -parallelism=20 -out=plan.tfplan
+
+      - name: Upload Plan
+        id: upload_plan
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ inputs.working-directory }}/plan.tfplan
+          retention-days: 1
+
+      - name: Process Terraform Plan
+        if: github.event_name == 'pull_request'
+        id: process_terraform_plan
+        shell: bash
+        run: |
+          PLAN_OUTPUT=$(bash "${GITHUB_WORKSPACE}/scripts/terraform/plan-processor.sh")
+          echo "${PLAN_OUTPUT}"
+          {
+            echo "plan-summary<<EOF"
+            echo "${PLAN_OUTPUT}"
+            echo "EOF"
+          } >>"${GITHUB_OUTPUT}"
+
+      - name: Comment on Pull Request
+        if: github.event_name == 'pull_request'
+        id: comment
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PLAN_SUMMARY: ${{ steps.process_terraform_plan.outputs.plan-summary }}
+          PLAN_LABEL: ${{ env.PLAN_LABEL }}
+        with:
+          script: |
+            const label = process.env.PLAN_LABEL
+            // Hidden marker so the comment can be found again, independent of any visible text changes.
+            const marker = `<!-- terraform-plan-summary: ${label} -->`
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes(marker)
+            })
+
+            const output = `${marker}\n${process.env.PLAN_SUMMARY}`;
+
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
+
+  apply:
+    name: Apply
+    needs: plan
+    if: inputs.action == 'plan_apply'
+    environment: ${{ inputs.environment }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    defaults:
+      run:
+        working-directory: ${{ inputs.working-directory }}
+    env:
+      TF_IN_AUTOMATION: true
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Set Artifact Name
+        id: set_artifact_name
+        shell: bash
+        env:
+          WORKING_DIRECTORY: ${{ inputs.working-directory }}
+          WORKSPACE: ${{ inputs.workspace }}
+        run: |
+          echo "ARTIFACT_NAME=tfplan-$(echo "${WORKING_DIRECTORY}" | tr '/' '-')${WORKSPACE:+-${WORKSPACE}}" >>"${GITHUB_ENV}"
+
+      - name: Set Up Terraform
+        id: setup_terraform
+        uses: hashicorp/setup-terraform@dfe3c3f87815947d99a8997f908cb6525fc44e9e # v4.0.1
+
+      - name: Authenticate to Google Cloud
+        id: auth_gcloud
+        uses: google-github-actions/auth@7c6bc770dae815cd3e89ee6cdf493a5fab2cc093 # v3.0.0
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+          service_account: ${{ secrets.GCP_SERVICE_ACCOUNT }}
+
+      - name: Initialise Terraform
+        id: initialise_terraform
+        shell: bash
+        run: |
+          terraform init -upgrade
+
+      - name: Select Terraform Workspace
+        if: inputs.workspace != ''
+        id: select_workspace
+        shell: bash
+        env:
+          WORKSPACE: ${{ inputs.workspace }}
+        run: |
+          terraform workspace select -or-create "${WORKSPACE}"
+
+      - name: Download Plan
+        id: download_plan
+        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        with:
+          name: ${{ env.ARTIFACT_NAME }}
+          path: ${{ inputs.working-directory }}
+
+      - name: Terraform Apply
+        id: terraform_apply
+        shell: bash
+        run: |
+          terraform apply -input=false -parallelism=20 -auto-approve plan.tfplan
