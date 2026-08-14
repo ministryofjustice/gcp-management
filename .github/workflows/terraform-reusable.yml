@@ -43,6 +43,8 @@ jobs:
       contents: read
       id-token: write
       pull-requests: write
+    outputs:
+      has-changes: ${{ steps.terraform_plan.outputs.exitcode == '2' }}
     defaults:
       run:
         working-directory: ${{ inputs.working-directory }}
@@ -103,11 +105,17 @@ jobs:
         id: terraform_plan
         shell: bash
         run: |
-          terraform plan -input=false -parallelism=20 -out=plan.tfplan
+          set +e
+          terraform plan -input=false -parallelism=20 -detailed-exitcode -out=plan.tfplan
+          exitcode="$?"
+          set -e
+          echo "exitcode=${exitcode}" >>"${GITHUB_OUTPUT}"
+          # 0 = no changes, 1 = error, 2 = changes present
+          [[ "${exitcode}" -ne 1 ]]
 
       - name: Upload Plan
         id: upload_plan
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ inputs.working-directory }}/plan.tfplan
@@ -170,7 +178,7 @@ jobs:
   apply:
     name: Apply
     needs: plan
-    if: inputs.action == 'plan_apply'
+    if: inputs.action == 'plan_apply' && needs.plan.outputs.has-changes == 'true'
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     permissions:
@@ -226,7 +234,7 @@ jobs:
 
       - name: Download Plan
         id: download_plan
-        uses: actions/download-artifact@018cc2cf5baa6db3ef3c5f8a56943fffe632ef53 # v6.0.0
+        uses: actions/download-artifact@3e5f45b2cfb9172054b4087a40e8e0b5a5461e7c # v8.0.1
         with:
           name: ${{ env.ARTIFACT_NAME }}
           path: ${{ inputs.working-directory }}
