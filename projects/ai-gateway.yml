@@ -1,0 +1,10 @@
+---
+environments:
+  development: {}
+  production: {}
+
+labels:
+  application: ai-gateway
+  business-unit: platforms
+  infrastructure-support: justice-data-platform
+  owner: justice-data-platform

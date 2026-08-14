@@ -19,3 +19,7 @@ data "google_kms_crypto_key" "terraform" {
   name     = "terraform"
   key_ring = data.google_kms_key_ring.terraform.id
 }
+
+data "google_secret_manager_secret_version_access" "github_app" {
+  secret = google_secret_manager_secret.github_app.secret_id
+}
