@@ -1,8 +1,7 @@
 terraform {
   backend "gcs" {
-    project = "moj-gcp-management"
-    bucket  = "moj-gcp-management-terraform"
-    prefix  = "management"
+    bucket = "moj-gcp-management-terraform"
+    prefix = "management"
   }
   required_providers {
     google = {
