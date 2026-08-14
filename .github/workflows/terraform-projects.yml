@@ -1,0 +1,36 @@
+---
+name: Terraform - Projects
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "terraform/projects/**"
+
+permissions: {}
+
+jobs:
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      projects: ${{ steps.detect_changes.outputs.changes }}
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
+        with:
+          persist-credentials: false
+
+      - name: Build path-filters File
+        id: build_path_filters
+        run: bash scripts/path-filter/configuration-generator.sh projects
+
+      - name: Detect Changes
+        id: detect_changes
+        uses: dorny/paths-filter@7b450fff21473bca461d4b92ce414b9d0420d706 # v4.0.2
+        with:
+          filters: .github/path-filter/projects.yml

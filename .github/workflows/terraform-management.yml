@@ -111,8 +111,7 @@ jobs:
             }
 
       - name: Terraform Apply
-        # TESTING: don't let this get into main
-        # if: github.ref == 'refs/heads/main'
+        if: github.ref == 'refs/heads/main'
         id: terraform_apply
         shell: bash
         run: |
