@@ -17,6 +17,10 @@ jobs:
     permissions:
       contents: read
       id-token: write
+      pull-requests: write
+    defaults:
+      run:
+        working-directory: terraform/management
     env:
       TF_IN_AUTOMATION: true
     steps:
@@ -36,3 +40,78 @@ jobs:
         with:
           project_id: ${{ secrets.GCP_PROJECT_ID }}
           workload_identity_provider: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+
+      - name: Initialise Terraform
+        id: initialise_terraform
+        shell: bash
+        run: |
+          terraform init -upgrade
+
+      - name: Validate Terraform
+        if: github.ref != 'refs/heads/main'
+        id: terraform_validate
+        shell: bash
+        run: |
+          terraform validate
+
+      - name: Terraform Plan
+        id: terraform_plan
+        shell: bash
+        run: |
+          terraform plan -input=false -parallelism=20 -out=plan.tfplan
+
+      - name: Process Terraform Plan
+        if: github.event_name == 'pull_request'
+        id: process_terraform_plan
+        shell: bash
+        run: |
+          PLAN_OUTPUT=$(bash scripts/terraform/plan-processor.sh)
+          echo "${PLAN_OUTPUT}"
+          {
+            echo "plan-summary<<EOF"
+            echo "${PLAN_OUTPUT}"
+            echo "EOF"
+          } >>"${GITHUB_OUTPUT}"
+
+      - name: Comment on Pull Request
+        if: github.event_name == 'pull_request'
+        id: comment
+        uses: actions/github-script@3a2844b7e9c422d3c10d287c895573f7108da1b3 # v9.0.0
+        env:
+          PLAN_SUMMARY: ${{ steps.process_terraform_plan.outputs.plan-summary }}
+        with:
+          script: |
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Plan Summary')
+            })
+
+            const output = `${process.env.PLAN_SUMMARY}`;
+
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
+
+      - name: Terraform Apply
+        if: github.ref == 'refs/heads/main'
+        id: terraform_apply
+        shell: bash
+        run: |
+          terraform apply -input=false -parallelism=20 -auto-approve plan.tfplan
