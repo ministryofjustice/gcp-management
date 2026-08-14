@@ -12,4 +12,7 @@ terraform {
   }
 }
 
-provider "google" {}
+provider "google" {
+  project = "moj-gcp-management"
+  region  = "europe-west2"
+}
