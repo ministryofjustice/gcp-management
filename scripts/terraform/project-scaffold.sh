@@ -9,7 +9,7 @@ for project in projects/*.yml; do
 
   sed -i "s/PROJECT_NAME/${project_name}/g" "terraform/projects/${project_name}/terraform.tf"
 
-  cd "terraform/projects/${project_name}"
+  cd "terraform/projects/${project_name}" || exit 1
 
   terraform init -upgrade -backend=false
 done
