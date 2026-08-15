@@ -1,6 +1,7 @@
 locals {
   project_services = [
     "aiplatform.googleapis.com",
+    "iam.googleapis.com",
     "iamcredentials.googleapis.com"
   ]
 }
