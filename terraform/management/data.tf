@@ -1,3 +1,5 @@
+data "google_project" "this" {}
+
 data "google_billing_account" "main" {
   billing_account = "017155-2D008B-384D08"
 }
