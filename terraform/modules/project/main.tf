@@ -11,6 +11,23 @@ resource "google_project" "this" {
   })
 }
 
+resource "google_project_iam_audit_config" "this" {
+  project = google_project.this.project_id
+  service = "allServices"
+
+  audit_log_config {
+    log_type = "ADMIN_READ"
+  }
+
+  audit_log_config {
+    log_type = "DATA_READ"
+  }
+
+  audit_log_config {
+    log_type = "DATA_WRITE"
+  }
+}
+
 resource "github_repository_environment" "this" {
   environment = var.name
   repository  = "gcp-management"
