@@ -44,7 +44,7 @@ jobs:
       id-token: write
       pull-requests: write
     outputs:
-      has-changes: ${{ steps.terraform_plan.outputs.exitcode == '2' }}
+      plan-exitcode: ${{ steps.terraform_plan.outputs.exitcode }}
     defaults:
       run:
         working-directory: ${{ inputs.working-directory }}
@@ -161,7 +161,7 @@ jobs:
   apply:
     name: Apply
     needs: plan
-    if: inputs.action == 'plan_apply' && needs.plan.outputs.has-changes == 'true'
+    if: inputs.action == 'plan_apply' && needs.plan.outputs.plan-exitcode == '2'
     environment: ${{ inputs.environment }}
     runs-on: ubuntu-latest
     permissions:
