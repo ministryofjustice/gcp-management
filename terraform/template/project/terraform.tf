@@ -17,11 +17,11 @@ terraform {
 }
 
 provider "google" {
-  project = "PROJECT_NAME-${terraform.workspace}"
+  project = "moj-gcp-PROJECT_NAME-${terraform.workspace}"
   region  = "europe-west2"
 }
 
 provider "google-beta" {
-  project = "PROJECT_NAME-${terraform.workspace}"
+  project = "moj-gcp-PROJECT_NAME-${terraform.workspace}"
   region  = "europe-west2"
 }
