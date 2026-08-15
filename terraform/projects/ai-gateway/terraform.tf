@@ -17,11 +17,13 @@ terraform {
 }
 
 provider "google" {
-  project = "moj-gcp-ai-gateway-${terraform.workspace}"
-  region  = "europe-west2"
+  project               = "moj-gcp-ai-gateway-${terraform.workspace}"
+  region                = "europe-west2"
+  user_project_override = true
 }
 
 provider "google-beta" {
-  project = "moj-gcp-ai-gateway-${terraform.workspace}"
-  region  = "europe-west2"
+  project               = "moj-gcp-ai-gateway-${terraform.workspace}"
+  region                = "europe-west2"
+  user_project_override = true
 }
