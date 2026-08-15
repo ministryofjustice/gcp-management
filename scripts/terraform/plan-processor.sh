@@ -48,7 +48,6 @@ else
   echo "# Terraform Plan Summary"
 fi
 
-
 if [[ ${TOTAL_CHANGES} -eq 0 ]]; then
   echo ""
   echo "✅ No changes. Infrastructure matches the configuration."
