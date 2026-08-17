@@ -42,10 +42,7 @@ resource "github_repository_environment" "this" {
   }
 
   reviewers {
-    teams = [
-      data.github_team.octo_engineering_leads.id,
-      data.github_team.data_platform_engineering.id
-    ]
+    teams = [for team in data.github_team.deployment_reviewer : team.id]
   }
 }
 

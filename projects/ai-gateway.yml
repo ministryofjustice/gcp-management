@@ -1,10 +1,14 @@
 ---
 environments:
-  development: {}
-  production: {}
+  development:
+    deployment_reviewers:
+      - data-platform-engineering
+  production:
+    deployment_reviewers:
+      - data-platform-engineering
 
 labels:
   application: ai-gateway
   business-unit: platforms
-  infrastructure-support: justice-data-platform
-  owner: justice-data-platform
+  infrastructure-support: data-platform-engineering
+  owner: data-platform-engineering

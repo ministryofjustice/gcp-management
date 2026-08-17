@@ -21,3 +21,9 @@ data "google_kms_crypto_key" "terraform" {
 data "google_secret_manager_secret_version_access" "github_app" {
   secret = google_secret_manager_secret.github_app.secret_id
 }
+
+data "github_team" "deployment_reviewer" {
+  for_each = local.deployment_reviewer_teams
+
+  slug = each.value
+}
