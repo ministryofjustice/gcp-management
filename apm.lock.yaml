@@ -1,11 +1,11 @@
 lockfile_version: '1'
-generated_at: '2026-08-13T11:21:10.938187+00:00'
+generated_at: '2026-08-14T22:44:55.514300+00:00'
 apm_version: 0.28.0
 dependencies:
 - repo_url: ministryofjustice/ai-toolkit
   name: data-platform-platform-engineering
   host: github.com
-  resolved_commit: 90cb6d6bf1ac12d04db9b3b1aa966c1995c30a8a
+  resolved_commit: 38927267ae41fd01c55686012fb209320854cbd5
   resolved_ref: main
   version: 1.0.0
   virtual_path: toolkits/data-platform/platform-engineering
@@ -17,15 +17,15 @@ dependencies:
   - .github/instructions/kubernetes.instructions.md
   - .github/instructions/terraform.instructions.md
   deployed_file_hashes:
-    .github/instructions/commit.instructions.md: sha256:e97f008cda4c507acd626f395ed9e496cfb1922ef59f10c9a5ecf0cc78e770b0
-    .github/instructions/github.instructions.md: sha256:b78d1299d1e5a7c9f2009f14a36620af6573de1b0bd0fe43aba273b7c22e7267
-    .github/instructions/kubernetes.instructions.md: sha256:d392b5d0471da42c9f260a8d5ac3f1964fa0906e4c3d4d35de8858524a336212
-    .github/instructions/terraform.instructions.md: sha256:cbd7b722b995010f0dd50f6e2dd8cdc52f7d807bf569b7d39353d98018fc6c98
-  content_hash: sha256:666ada489a6f3f1d11daae9cf2f24aa1f783b0f54483d408208b3a69b2855a80
+    .github/instructions/commit.instructions.md: sha256:2e7d859817798f4b208bf5b6cb32e96974600912eb7c40039770b30d5ce161a0
+    .github/instructions/github.instructions.md: sha256:62ffb9365ca4c2c27b00f3fe5bc583fa14b17a2ef29eec5e0d23875a7fa5771f
+    .github/instructions/kubernetes.instructions.md: sha256:5be3cc0fb12e846863c04fed94300b67c291ad87175298145134b9f260ebc615
+    .github/instructions/terraform.instructions.md: sha256:b118b58609d51d979a2d700d2d1196cbe25bec795bd8014b59b85f2d6bde37ca
+  content_hash: sha256:bd976b29ce167956f99376f310b61db075bb3a1a913a11b7e29f5e6d4864316a
 - repo_url: ministryofjustice/ai-toolkit
   name: universal
   host: github.com
-  resolved_commit: 90cb6d6bf1ac12d04db9b3b1aa966c1995c30a8a
+  resolved_commit: 38927267ae41fd01c55686012fb209320854cbd5
   resolved_ref: main
   version: 1.0.0
   virtual_path: toolkits/universal
@@ -35,9 +35,9 @@ dependencies:
   - .github/instructions/language.instructions.md
   - .github/instructions/ministryofjustice.instructions.md
   deployed_file_hashes:
-    .github/instructions/language.instructions.md: sha256:70e9d0f220f2ceec1cf5b8088c9e199259670f9baa383b330ff3ba9e4107e655
-    .github/instructions/ministryofjustice.instructions.md: sha256:b90d90b99e711ec0823c240f15421cdb2fd03d14aaad7d6622e93f108c5309c5
-  content_hash: sha256:32404084d9e9a4dc1cd48029d883847657f7b8bf464dd91586fb653db208f74a
+    .github/instructions/language.instructions.md: sha256:dbbd7951e0cfcdff32b237f1b35ab62ce9f30ceb6c3674f8f1d028a2b7c7c9be
+    .github/instructions/ministryofjustice.instructions.md: sha256:e5f98f5dae901db79b6a869826fb40fcc051fe1ddd057e5fd4dc8d7822e1e652
+  content_hash: sha256:f503de05a01685575188eee0610cafd4ac2ed0688bf4848d16f5f5e0c41ab435
 deployments:
 - kind: project-relative
   target: copilot
@@ -47,7 +47,7 @@ deployments:
   owners:
   - ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
   active_owner: ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
-  content_hash: sha256:e97f008cda4c507acd626f395ed9e496cfb1922ef59f10c9a5ecf0cc78e770b0
+  content_hash: sha256:2e7d859817798f4b208bf5b6cb32e96974600912eb7c40039770b30d5ce161a0
 - kind: project-relative
   target: copilot
   value: .github/instructions/github.instructions.md
@@ -56,7 +56,7 @@ deployments:
   owners:
   - ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
   active_owner: ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
-  content_hash: sha256:b78d1299d1e5a7c9f2009f14a36620af6573de1b0bd0fe43aba273b7c22e7267
+  content_hash: sha256:62ffb9365ca4c2c27b00f3fe5bc583fa14b17a2ef29eec5e0d23875a7fa5771f
 - kind: project-relative
   target: copilot
   value: .github/instructions/kubernetes.instructions.md
@@ -65,7 +65,7 @@ deployments:
   owners:
   - ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
   active_owner: ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
-  content_hash: sha256:d392b5d0471da42c9f260a8d5ac3f1964fa0906e4c3d4d35de8858524a336212
+  content_hash: sha256:5be3cc0fb12e846863c04fed94300b67c291ad87175298145134b9f260ebc615
 - kind: project-relative
   target: copilot
   value: .github/instructions/language.instructions.md
@@ -74,7 +74,7 @@ deployments:
   owners:
   - ministryofjustice/ai-toolkit/toolkits/universal
   active_owner: ministryofjustice/ai-toolkit/toolkits/universal
-  content_hash: sha256:70e9d0f220f2ceec1cf5b8088c9e199259670f9baa383b330ff3ba9e4107e655
+  content_hash: sha256:dbbd7951e0cfcdff32b237f1b35ab62ce9f30ceb6c3674f8f1d028a2b7c7c9be
 - kind: project-relative
   target: copilot
   value: .github/instructions/ministryofjustice.instructions.md
@@ -83,7 +83,7 @@ deployments:
   owners:
   - ministryofjustice/ai-toolkit/toolkits/universal
   active_owner: ministryofjustice/ai-toolkit/toolkits/universal
-  content_hash: sha256:b90d90b99e711ec0823c240f15421cdb2fd03d14aaad7d6622e93f108c5309c5
+  content_hash: sha256:e5f98f5dae901db79b6a869826fb40fcc051fe1ddd057e5fd4dc8d7822e1e652
 - kind: project-relative
   target: copilot
   value: .github/instructions/terraform.instructions.md
@@ -92,7 +92,7 @@ deployments:
   owners:
   - ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
   active_owner: ministryofjustice/ai-toolkit/toolkits/data-platform/platform-engineering
-  content_hash: sha256:cbd7b722b995010f0dd50f6e2dd8cdc52f7d807bf569b7d39353d98018fc6c98
+  content_hash: sha256:b118b58609d51d979a2d700d2d1196cbe25bec795bd8014b59b85f2d6bde37ca
 - kind: uri
   target: mcp
   value: github

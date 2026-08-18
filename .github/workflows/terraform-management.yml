@@ -1,0 +1,33 @@
+---
+name: Terraform - Management
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "terraform/management/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "terraform/management/**"
+
+permissions: {}
+
+jobs:
+  terraform:
+    name: Terraform
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    uses: ./.github/workflows/terraform-reusable.yml
+    with:
+      working-directory: terraform/management
+      environment: management
+      action: ${{ github.event_name == 'pull_request' && 'plan' || 'plan_apply' }}
+    secrets:
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+      GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}

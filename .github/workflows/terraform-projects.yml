@@ -1,0 +1,108 @@
+---
+name: Terraform - Projects
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - "terraform/projects/**"
+  push:
+    branches:
+      - main
+    paths:
+      - "terraform/projects/**"
+
+permissions: {}
+
+jobs:
+  detect-changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      projects: ${{ steps.detect_changes.outputs.changes }}
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Build path-filters File
+        id: build_path_filters
+        run: bash scripts/path-filter/configuration-generator.sh projects
+
+      - name: Detect Changes
+        id: detect_changes
+        uses: dorny/paths-filter@ceb8a2b8f2d89434be7ff52d3de7ec3738c5cc9d # v4.0.3
+        with:
+          filters: .github/path-filter/projects.yml
+
+  strategy:
+    name: Build Environment Matrix
+    needs: detect-changes
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    outputs:
+      matrix: ${{ steps.build_matrix.outputs.matrix }}
+    steps:
+      - name: Checkout
+        id: checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
+      - name: Install PyYAML
+        id: install_pyyaml
+        run: pip install --quiet pyyaml
+
+      - name: Build Environment Matrix
+        id: build_matrix
+        shell: python
+        env:
+          CHANGED_PROJECTS: ${{ needs.detect-changes.outputs.projects }}
+        run: |
+          import json
+          import os
+
+          import yaml
+
+          projects = json.loads(os.environ["CHANGED_PROJECTS"])
+
+          include = []
+          for project in projects:
+              with open(f"projects/{project}.yml", encoding="utf-8") as project_file:
+                  config = yaml.safe_load(project_file)
+              for environment in config.get("environments", {}):
+                  include.append({"project": project, "environment": environment})
+
+          matrix = {"include": include}
+          print(f"Matrix: {json.dumps(matrix)}")
+
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as github_output:
+              github_output.write(f"matrix={json.dumps(matrix)}\n")
+
+  terraform:
+    name: Terraform (${{ matrix.project }} / ${{ matrix.environment }})
+    needs: strategy
+    if: join(fromJson(needs.strategy.outputs.matrix).include) != ''
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJson(needs.strategy.outputs.matrix) }}
+    permissions:
+      contents: read
+      id-token: write
+      pull-requests: write
+    uses: ./.github/workflows/terraform-reusable.yml
+    with:
+      working-directory: terraform/projects/${{ matrix.project }}
+      workspace: ${{ matrix.environment }}
+      environment: ${{ matrix.project }}-${{ matrix.environment }}
+      action: ${{ matrix.environment == 'production' && (github.event_name == 'pull_request' && 'plan' || 'plan_apply') || 'plan_apply' }}
+    secrets:
+      GCP_PROJECT_ID: ${{ secrets.GCP_PROJECT_ID }}
+      GCP_WORKLOAD_IDENTITY_PROVIDER: ${{ secrets.GCP_WORKLOAD_IDENTITY_PROVIDER }}
+      GCP_SERVICE_ACCOUNT: ${{ secrets.GCP_SERVICE_ACCOUNT }}

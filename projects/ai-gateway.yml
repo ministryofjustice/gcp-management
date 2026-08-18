@@ -1,0 +1,14 @@
+---
+environments:
+  development:
+    deployment_reviewers:
+      - data-platform-engineering
+  production:
+    deployment_reviewers:
+      - data-platform-engineering
+
+labels:
+  application: ai-gateway
+  business-unit: platforms
+  infrastructure-support: data-platform-engineering
+  owner: data-platform-engineering
