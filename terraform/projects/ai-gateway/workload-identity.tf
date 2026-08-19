@@ -3,7 +3,7 @@ resource "google_iam_workload_identity_pool" "amazon_eks" {
   display_name              = "Amazon EKS"
 }
 
-resource "google_iam_workload_identity_pool_provider" "amazon_eks" {
+resource "google_iam_workload_identity_pool_provider" "ai_gateway" {
   workload_identity_pool_id          = google_iam_workload_identity_pool.amazon_eks.workload_identity_pool_id
   workload_identity_pool_provider_id = "data-platform"
   display_name                       = "Data Platform"
@@ -19,8 +19,35 @@ resource "google_iam_workload_identity_pool_provider" "amazon_eks" {
   }
 }
 
+moved {
+  from = google_iam_workload_identity_pool_provider.amazon_eks
+  to   = google_iam_workload_identity_pool_provider.ai_gateway
+}
+
 resource "google_service_account_iam_member" "ai_gateway_workload_identity_user" {
   service_account_id = google_service_account.ai_gateway.name
   role               = "roles/iam.workloadIdentityUser"
   member             = "principal://iam.googleapis.com/${google_iam_workload_identity_pool.amazon_eks.name}/subject/system:serviceaccount:${local.ai_gateway_namespace}:${local.ai_gateway_service_account}"
+}
+
+resource "google_iam_workload_identity_pool_provider" "data_platform_monitoring" {
+  workload_identity_pool_id          = google_iam_workload_identity_pool.amazon_eks.workload_identity_pool_id
+  workload_identity_pool_provider_id = "data-platform-monitoring"
+  display_name                       = "Data Platform Monitoring"
+
+  attribute_mapping = {
+    "google.subject" = "assertion.sub"
+  }
+
+  attribute_condition = "assertion.sub == \"system:serviceaccount:${local.grafana_namespace}:${local.grafana_service_account}\""
+
+  oidc {
+    issuer_uri = local.cloud_platform_oidc
+  }
+}
+
+resource "google_service_account_iam_member" "grafana_workload_identity_user" {
+  service_account_id = google_service_account.grafana.name
+  role               = "roles/iam.workloadIdentityUser"
+  member             = "principal://iam.googleapis.com/${google_iam_workload_identity_pool.amazon_eks.name}/subject/system:serviceaccount:${local.grafana_namespace}:${local.grafana_service_account}"
 }
