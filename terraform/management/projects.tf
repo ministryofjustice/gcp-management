@@ -4,7 +4,7 @@ module "project" {
   source = "../modules/project"
 
   name                 = each.key
-  project_id           = each.key
+  project_id           = each.value.project_id
   folder               = data.google_folder.moj_gcp.name
   billing_account      = data.google_billing_account.main.billing_account
   deployment_reviewers = each.value.deployment_reviewers

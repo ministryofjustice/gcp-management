@@ -1,6 +1,7 @@
 ---
 environments:
   development:
+    project_id: moj-gcp-gemini-enterprise-dev
     deployment_reviewers:
       - justice-engineering-ai-enablement
 
