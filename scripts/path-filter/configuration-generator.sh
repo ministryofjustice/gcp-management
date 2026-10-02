@@ -43,13 +43,5 @@ for folder in ${folders}; do
     baseName=$(basename "${folder}")
   fi
 
-  if [[ "${MODE}" == "projects" ]]; then
-    {
-      echo "${baseName}:"
-      echo "  - \"${folder}/**\""
-      echo "  - \"projects/${baseName}.yml\""
-    } >>"${PATH_FILTER_CONFIGURATION_FILE}"
-  else
-    echo "${baseName}: ${folder}/**" >>"${PATH_FILTER_CONFIGURATION_FILE}"
-  fi
+  echo "${baseName}: ${folder}/**" >>"${PATH_FILTER_CONFIGURATION_FILE}"
 done
