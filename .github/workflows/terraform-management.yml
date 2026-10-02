@@ -7,11 +7,13 @@ on:
       - main
     paths:
       - "terraform/management/**"
+      - "projects/*.yml"
   push:
     branches:
       - main
     paths:
       - "terraform/management/**"
+      - "projects/*.yml"
 
 permissions: {}
 
