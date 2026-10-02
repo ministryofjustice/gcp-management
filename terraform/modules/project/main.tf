@@ -1,6 +1,6 @@
 resource "google_project" "this" {
   name                = var.name
-  project_id          = "moj-gcp-${var.project_id}"
+  project_id          = var.project_id
   folder_id           = var.folder
   billing_account     = var.billing_account
   auto_create_network = false

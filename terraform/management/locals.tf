@@ -19,6 +19,7 @@ locals {
         environment          = environment
         labels               = configuration.labels
         project_name         = project_name
+        project_id           = try(configuration.environments[environment].project_id, "moj-gcp-${project_name}-${environment}")
       }
     }
   ]...)
