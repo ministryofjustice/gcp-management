@@ -1,0 +1,11 @@
+---
+environments:
+  development:
+    deployment_reviewers:
+      - justice-engineering-ai-enablement
+
+labels:
+  application: gemini-enterprise-trial
+  business-unit: platforms
+  infrastructure-support: justice-engineering-ai-enablement
+  owner: justice-engineering-ai-enablement
